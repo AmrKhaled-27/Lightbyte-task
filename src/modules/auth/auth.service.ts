@@ -4,7 +4,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { User, UserRepository } from './user.repository';
-import { SignUpDto } from './dtos/signup.dto';
+import { AuthDto } from './dtos/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 @Injectable()
@@ -14,7 +14,7 @@ export class AuthService {
         private jwtService: JwtService,
     ) {}
 
-    async signUp({ email, password }: SignUpDto) {
+    async signUp({ email, password }: AuthDto) {
         const doesUserExist = await this.doesUserExist(email);
 
         if (doesUserExist) {
@@ -22,10 +22,17 @@ export class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        return this.userRepo.create({ email, password: hashedPassword });
+        const newUser = await this.userRepo.create({
+            email,
+            password: hashedPassword,
+        });
+
+        return {
+            access_token: this.generateToken(newUser),
+        };
     }
 
-    async login({ email, password }: SignUpDto) {
+    async login({ email, password }: AuthDto) {
         const user = await this.userRepo.findByEmail(email);
         const isUserValid = await this.isUserValid(user, password);
 
@@ -38,6 +45,14 @@ export class AuthService {
         };
     }
 
+    verifyToken(token: string) {
+        try {
+            const decoded = this.jwtService.verify(token);
+            return decoded;
+        } catch (e) {
+            return null;
+        }
+    }
     // Helper functions
     private async doesUserExist(email: string) {
         const user = await this.userRepo.findByEmail(email);
