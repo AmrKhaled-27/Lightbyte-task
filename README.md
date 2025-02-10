@@ -25,7 +25,6 @@ This is a URL Shortener built using [NestJS](https://nestjs.com/) and PostgreSQL
 ```sh
 git https://github.com/AmrKhaled-27/Lightbyte-task.git
 cd url-shortener
-yarn
 ```
 
 ### **2️⃣ Set Up Environment Variables**
