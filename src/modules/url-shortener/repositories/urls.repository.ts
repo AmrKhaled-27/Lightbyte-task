@@ -1,15 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from 'src/common/base-repo.repo';
-import { DatabaseService } from '../database/database.service';
-import { UrlIdentifierService } from './url-identifier-generation.service';
-export type Url = {
-    id: string;
-    user_id: number;
-    original_url: string;
-    short_url: string;
-    created_at: Date;
-    updated_at: Date;
-};
+import { DatabaseService } from '../../database/database.service';
+import { UrlIdentifierService } from '../services/url-identifier-generation.service';
+import { Url } from 'src/types/urls';
+
 @Injectable()
 export class UrlsRepository extends BaseRepository<Url> {
     constructor(

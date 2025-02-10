@@ -1,12 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from 'src/common/base-repo.repo';
 import { DatabaseService } from '../database/database.service';
-
-export type User = {
-    id?: string;
-    email: string;
-    password: string;
-};
+import { User } from 'src/types/users';
 
 @Injectable()
 export class UserRepository extends BaseRepository<User> {

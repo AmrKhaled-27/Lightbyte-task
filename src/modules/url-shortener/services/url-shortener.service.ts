@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UrlsRepository } from './urls.repository';
-
+import { UrlsRepository } from '../repositories/urls.repository';
+import { Url } from 'src/types/urls';
 @Injectable()
 export class UrlShortenerService {
     constructor(private readonly urlsRepository: UrlsRepository) {}
@@ -19,9 +19,9 @@ export class UrlShortenerService {
         return urlObject.short_url;
     }
 
-    async resolveUrl(urlIdentifier: string): Promise<string> {
+    async resolveUrl(urlIdentifier: string): Promise<Url | null> {
         const urlObject =
             await this.urlsRepository.findByUrlIdentifier(urlIdentifier);
-        return urlObject?.original_url;
+        return urlObject;
     }
 }
