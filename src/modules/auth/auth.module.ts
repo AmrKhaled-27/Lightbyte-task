@@ -30,6 +30,6 @@ import { APP_PIPE } from '@nestjs/core';
             }),
         },
     ],
-    exports: [AuthService],
+    exports: [AuthService, UserRepository],
 })
 export class AuthModule {}
