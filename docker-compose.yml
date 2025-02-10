@@ -1,0 +1,36 @@
+services:
+    backend:
+      container_name: nest_app
+      build: .
+      ports:
+        - ${PORT}:${PORT}
+      depends_on:
+        - postgres
+      env_file:
+        - .env.prod
+      networks:
+        - app_network
+      entrypoint: ['/bin/sh', '-c', 'yarn build && yarn start:prod']
+
+      restart: 'unless-stopped'
+
+    postgres:
+      container_name: postgres
+      image: postgres:latest
+      ports:
+        - 5432:5432
+      environment:
+        POSTGRES_USER: ${DB_USERNAME}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${DB_NAME}
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+      networks:
+        - app_network
+      restart: 'unless-stopped'
+volumes:
+  pgdata:
+
+networks:
+  app_network:
+    driver: bridge
