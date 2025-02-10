@@ -1,18 +1,21 @@
-import { Global, Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 import { DatabaseService } from './database.service';
+
 @Global()
 @Module({
     providers: [
         {
             provide: 'DB_CONNECTION',
-            useFactory: async () => {
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => {
                 return new Pool({
-                    host: process.env.DB_HOST,
-                    port: Number(process.env.DB_PORT),
-                    user: process.env.DB_USERNAME,
-                    password: process.env.DB_PASSWORD,
-                    database: process.env.DB_NAME,
+                    host: configService.get<string>('DB_HOST'),
+                    port: configService.get<number>('DB_PORT'),
+                    user: configService.get<string>('DB_USERNAME'),
+                    password: configService.get<string>('DB_PASSWORD'),
+                    database: configService.get<string>('DB_NAME'),
                 });
             },
         },

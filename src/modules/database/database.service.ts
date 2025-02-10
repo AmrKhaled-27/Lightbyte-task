@@ -34,7 +34,7 @@ export class DatabaseService implements OnModuleInit {
         }
     }
 
-    async onModuleInit() {
-        await this.runMigrations();
+    onModuleInit() {
+        this.runMigrations();
     }
 }
