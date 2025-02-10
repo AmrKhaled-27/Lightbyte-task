@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UrlsRepository } from '../repositories/urls.repository';
 import { Url } from 'src/types/urls';
 @Injectable()
@@ -22,6 +22,9 @@ export class UrlShortenerService {
     async resolveUrl(urlIdentifier: string): Promise<Url | null> {
         const urlObject =
             await this.urlsRepository.findByUrlIdentifier(urlIdentifier);
+        if (!urlObject) {
+            throw new NotFoundException('URL not found');
+        }
         return urlObject;
     }
 }

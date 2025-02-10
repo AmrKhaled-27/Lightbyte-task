@@ -47,11 +47,10 @@ export class UrlShortenerController {
     @UseGuards(JwtAuthGuard)
     @Get('stats')
     async getStats(@Req() req: Request) {
-        const stats = await this.visitsService.visitsStats(req.user.sub);
-        stats.forEach((stat: VisitStats) => {
-            stat.short_url = `${req.protocol}://${req.get('host')}/${stat.short_url}`;
-        });
-        return stats;
+        return await this.visitsService.visitsStats(
+            req.user.sub,
+            `${req.protocol}://${req.get('host')}`,
+        );
     }
 
     @ApiOperation({ summary: 'Redirect to original link' })
@@ -64,9 +63,7 @@ export class UrlShortenerController {
         const url = await this.urlShortenerService.resolveUrl(
             identifier.identifier,
         );
-        if (!url) {
-            throw new NotFoundException('URL not found');
-        }
+
         const ipAddress =
             (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
             req.socket.remoteAddress ||
@@ -77,6 +74,7 @@ export class UrlShortenerController {
             ipAddress,
             req.headers['user-agent'],
         );
+
         res.redirect(url.original_url);
     }
 }
