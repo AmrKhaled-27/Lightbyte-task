@@ -9,5 +9,5 @@ export type Visit = {
 export type VisitStats = {
     short_url: string;
     original_url: string;
-    visit_count: number;
+    visits_count: number;
 };
